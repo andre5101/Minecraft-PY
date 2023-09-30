@@ -3,28 +3,26 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 
 app = Ursina()
 
+items = ["planks_oak", "stone", "dirt", "cobblestone"]
+selected = 0
+
+def update():
+    if held_keys['1']:
+        selected = 0
+    elif held_keys['2']:
+        seleceted = 1
+    elif held_keys['3']:
+        selected = 2
+    elif held_keys['4']:
+        seleceted = 3
+
 class Block(Button):
-    def __init__(self, block_type, block_id ,position=(0,0, 0)):
-        
-        match block_type:
-
-            case "planks":
-                if block_id == 0:
-                    block_name = "planks_oak"
-            case "dirt":
-                if block_id == 0:
-                    block_name = "normal dirt"
-            case "stone":
-                if block_id == 0:
-                    block_name = "stone"
-
-                if block_id == 1:
-                    block_name = "cobblestone"
+    def __init__(self, block_name, position=(0,0, 0)):
 
         match block_name:
             case "planks_oak":
                 block_texture = "assets/planks_oak.png"
-            case "normal dirt":
+            case "dirt":
                 block_texture = "assets/dirt.png"
             case "stone":
                 block_texture = "assets/stone.png"
@@ -42,19 +40,33 @@ class Block(Button):
         )
         
     def input(self, key):
+        global selected
+        if held_keys['1']:
+            selected = 0
+        elif held_keys['2']:
+            selected = 1
+        elif held_keys['3']:
+            selected = 2
+        elif held_keys['4']:
+            selected = 3
+            
         if self.hovered:
             if key ==  "left mouse down":
                 destroy(self)
             if key == "right mouse down":
-                
-                block = Block(position=self.position + mouse.normal, block_type="stone", block_id=0)
+                if selected >= 0 and selected <= len(items):
+                    block = Block(position=self.position + mouse.normal, block_name=items[selected])
 
 chunkSize = 16
 
 for z in range(chunkSize):
     for x in range (chunkSize):
-        voxel = Block(position=(x, 0, z), block_type="dirt", block_id=0)
+        voxel = Block(position=(x, 0, z), block_name="dirt")
+
+
 
 player = FirstPersonController()
+
+
 
 app.run()
